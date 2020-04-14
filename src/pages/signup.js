@@ -7,12 +7,14 @@ import TextField from "@material-ui/core/TextField"
 import Button from "@material-ui/core/Button"
 // Redux stuff
 import { useDispatch, useSelector } from "react-redux"
-import { loginUser } from "../redux/actions/userActions"
+import { signupUser } from "../redux/actions/userActions"
 
-function LoginPage({ history }) {
+function SignupPage({ history }) {
   const dispatch = useDispatch()
+  const [handle, setHandle] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
   const [errors, setErrors] = useState({})
 
   const UI = useSelector((state) => state.UI)
@@ -24,18 +26,32 @@ function LoginPage({ history }) {
   const handleSubmit = (e) => {
     e.preventDefault()
     const userData = {
+      handle,
       email,
       password,
+      confirmPassword,
     }
-    dispatch(loginUser(userData, history))
+    console.log(userData)
+    dispatch(signupUser(userData, history))
   }
 
   return (
     <Grid container>
       <Grid item sm />
       <Grid item sm>
-        <Typography variant="h2">Login</Typography>
+        <Typography variant="h2">Signup</Typography>
         <form noValidate onSubmit={handleSubmit}>
+          <TextField
+            id="handle"
+            name="handle"
+            type="text"
+            label="Handle"
+            helperText={errors.handle}
+            error={errors.handle ? true : false}
+            value={handle}
+            onChange={(e) => setHandle(e.target.value)}
+            fullWidth
+          />
           <TextField
             id="email"
             name="email"
@@ -58,6 +74,17 @@ function LoginPage({ history }) {
             onChange={(e) => setPassword(e.target.value)}
             fullWidth
           />
+          <TextField
+            id="confirmPassword"
+            name="confirmPassword"
+            type="password"
+            label="Password"
+            helperText={errors.confirmPassword}
+            error={errors.confirmPassword ? true : false}
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            fullWidth
+          />
           {errors.general && (
             <Typography variant="body2">{errors.general}</Typography>
           )}
@@ -67,12 +94,12 @@ function LoginPage({ history }) {
             color="primary"
             disabled={UI.loading}
           >
-            Login
+            Signup
             {UI.loading && <p>loading</p>}
           </Button>
           <br />
           <small>
-            dont have an account ? sign up <Link to="/signup">here</Link>
+            have an account already ? login <Link to="/login">here</Link>
           </small>
         </form>
       </Grid>
@@ -81,4 +108,4 @@ function LoginPage({ history }) {
   )
 }
 
-export default LoginPage
+export default SignupPage
